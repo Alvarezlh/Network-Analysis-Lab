@@ -1,0 +1,10 @@
+ISP: Anthropic, PBC
+Usage Type: Commercial
+ASN: AS399358
+Domain Name: anthropic.com
+Country: United States of America
+City: San Francisco, California
+
+Source: AbuseIPDB - https://www.abuseipdb.com/
+Reports: 0
+Confidence of Abuse: 0%
