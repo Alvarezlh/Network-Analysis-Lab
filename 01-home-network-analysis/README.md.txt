@@ -19,13 +19,13 @@ of total bandwidth. Investigation revealed legitimate Anthropic CDN traffic.
 | Metric | Value |
 |--------|-------|
 | Total Packets | 12,147 |
-| Top Source IP | 192.168.0.13 (39.32%) |
+| Top Source IP | 192.168.0.x (39.32%) |
 | Top Destination IP | 160.79.104.10 (36.21%) |
 | Protocol | TCP |
 | Duration | 8.77 seconds |
 
 ### IP Breakdown
-- **192.168.0.13** → 4,776 pkts (39.32%) - Local PC (WiFi)
+- **192.168.0.x** → 4,776 pkts (39.32%) - Local PC (WiFi)
 - **160.79.104.10** → 4,398 pkts (36.21%) - Anthropic CDN
 - **192.168.0.12** → 832 pkts (6.85%)
 - **192.168.0.1** → 509 pkts (4.19%) - Router
@@ -41,9 +41,9 @@ of total bandwidth. Investigation revealed legitimate Anthropic CDN traffic.
 ### Step 2: IP Identification (Local)
 ```bash
 ipconfig
-# IPv4: 192.168.0.13
+# IPv4: 192.168.0.x
 # Adapter: Intel Wi-Fi 6 AX201
-# SSID: vodafone56D3
+# SSID: Home-Network
 ```
 
 ### Step 3: IP Investigation (Remote)
