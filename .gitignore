@@ -1,0 +1,4 @@
+# Configuration files with sensitive data
+03-wireshark-wazuh-automation/config/config.env
+*.env
+*.conf.local
