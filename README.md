@@ -341,6 +341,62 @@ wireshark_logs/ Security Events
 
 ---
 
+---
+
+## 📊 Resultados del Caso 3: Wireshark-to-Wazuh Automation
+
+**Estado:** Captura y parseo funcionando ✅
+
+### Ejecución Exitosa (30-09-2026)
+
+**Captura de tráfico:**
+- ✅ Duración: 60 segundos en eth0
+- ✅ Paquetes capturados: 3,896
+- ✅ Formato: JSON (tshark)
+
+**Análisis de eventos:**
+- ✅ Eventos analizados: 50 primeros paquetes
+- ✅ Campos extraídos: src_ip, dst_ip, protocol, dst_port, frame_length, timestamp
+- ✅ Parseado correctamente: HTTPS (puerto 443), TCP, otros protocolos
+
+**Guardado de eventos:**
+- ✅ Ubicación: `/home/kali/wireshark_logs/wireshark_events_YYYYMMDD_HHMMSS.json`
+- ✅ Formato JSON válido
+- ✅ Pronto: Ingesta automática en Wazuh SIEM
+
+### Ejemplo de Evento Capturado
+
+```json
+{
+  "timestamp": "2026-09-30T22:55:32.123456",
+  "event_type": "network_traffic",
+  "src_ip": "192.168.0.20",
+  "dst_ip": "172.67.157.37",
+  "protocol": "HTTPS",
+  "dst_port": "443",
+  "frame_length": "1507"
+}
+```
+
+### Tráfico Analizado (Top 5)
+
+1. 172.67.157.37 → 192.168.0.20:40890 (TCP)
+2. 192.168.0.20 → 172.67.157.37:443 (HTTPS)
+3. N/A → N/A (TCP) - Paquete incompleto
+4. 172.67.157.37 → 192.168.0.20:40890 (TCP)
+5. 192.168.0.20 → 172.67.157.37:443 (HTTPS)
+... y 45 más
+
+### Próximos Pasos
+
+- [ ] Implementar ingesta automática en Wazuh SIEM
+- [ ] Mapeo de eventos JSON con reglas de detección (100001-100004)
+- [ ] Crear dashboard visual en Wazuh
+- [ ] Automatizar con cron job (ejecución horaria)
+- [ ] Integración con Slack para alertas en tiempo real
+
+---
+
 ## 📄 Licencia
 
 Este proyecto es de código abierto para propósitos educativos y de portfolio.
