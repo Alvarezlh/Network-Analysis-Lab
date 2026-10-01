@@ -1,26 +1,26 @@
 # Network Analysis Lab - Wazuh SIEM Automation
 
-**Portfolio de Análisis de Seguridad de Red con Wireshark y Wazuh SIEM**
+**Cybersecurity Portfolio: Network Traffic Analysis and SIEM Integration**
 
-Laboratorio completo para captura, análisis e ingesta de tráfico de red en un SIEM empresarial.
-
----
-
-## 📋 Descripción General
-
-Este proyecto demuestra:
-- **Captura de tráfico de red** con Wireshark/tshark
-- **Análisis de endpoints** e identificación de patrones de comunicación
-- **Automatización SIEM** mediante Python y API REST
-- **Detección de amenazas** con reglas custom en Wazuh
-- **Investigación de incidentes** estilo SOC
+Real-world network analysis and incident investigation using Wireshark, Wazuh, and OSINT techniques.
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📋 Overview
+
+This project demonstrates:
+- **Network traffic capture** with Wireshark/tshark
+- **Endpoint analysis** and communication pattern identification
+- **SIEM automation** via Python and REST API
+- **Threat detection** with custom Wazuh rules
+- **Incident investigation** in SOC analyst style
+
+---
+
+## 📁 Project Structure
 
 Network-Analysis-Lab/
-├── 01-home-network-analysis/ # Caso 1: Análisis CDN Anthropic
+├── 01-home-network-analysis/ # Case 1: Anthropic CDN
 │ ├── README.md
 │ ├── analysis/
 │ │ ├── ip-endpoints.md
@@ -30,7 +30,7 @@ Network-Analysis-Lab/
 │ └── whois/
 │ └── 160.79.104.10.txt
 │
-├── 02-cloudflare-traffic-analysis/ # Caso 2: Análisis CDN Cloudflare
+├── 02-cloudflare-traffic-analysis/ # Case 2: Cloudflare CDN
 │ ├── README.md
 │ ├── analysis/
 │ │ ├── ip-endpoints.md
@@ -40,136 +40,167 @@ Network-Analysis-Lab/
 │ └── whois/
 │ └── 162.159.141.124.txt
 │
-├── 03-wireshark-wazuh-automation/ # Caso 3: Automatización Wazuh
+├── 03-wireshark-wazuh-automation/ # Case 3: Wazuh Automation
 │ ├── README.md
 │ ├── scripts/
-│ │ ├── wireshark_to_wazuh.py # Script de captura e ingesta
-│ │ └── storage_manager.sh # Limpieza y rotación de logs
+│ │ ├── wireshark_to_wazuh.py
+│ │ └── storage_manager.sh
 │ ├── config/
-│ │ ├── config.env # Variables de entorno (no en GitHub)
-│ │ ├── wazuh_rules.xml # Reglas de detección custom
+│ │ ├── config.env (not in GitHub)
+│ │ ├── wazuh_rules.xml
 │ │ └── log_rotation.conf
 │ ├── docs/
-│ │ ├── setup.md # Instrucciones de instalación
+│ │ ├── setup.md
 │ │ └── automation_guide.md
 │ └── .gitignore
 │
-└── README.md (este archivo)
+└── README.md (this file)
 
 
 ---
 
-## 🎯 Casos Completados
+## 🎯 Completed Cases
 
-### **Caso 1: Análisis CDN Anthropic (13-09-2026)**
+### Case 1: Anthropic CDN Analysis (13-09-2026)
 
-**Objetivo:** Identificar y clasificar tráfico hacia servidores externos
+**Objective:** Identify and classify external traffic
 
-**Hallazgos:**
+**Findings:**
 - **IP:** 160.79.104.10 (Anthropic, San Francisco)
-- **Tráfico:** 39.32% del ancho de banda (192.168.0.x)
-- **Protocolo:** HTTPS (Puerto 443)
-- **Clasificación:** ✅ **Falso Positivo** - Navegación a claude.ai
+- **Traffic:** 39.32% bandwidth (192.168.0.x)
+- **Protocol:** HTTPS (Port 443)
+- **Classification:** ✅ **False Positive** - claude.ai browsing
 
-**Metodología:**
-1. Captura de 60s en Wireshark
-2. Análisis de endpoints de red
-3. Consulta OSINT (AbuseIPDB, WHOIS)
-4. Redacción de reporte de incidente
+**Methodology:**
+1. 60s Wireshark capture
+2. Network endpoint analysis
+3. OSINT investigation (AbuseIPDB, WHOIS)
+4. Incident report writing
 
-**Archivos:** `/01-home-network-analysis/`
+**Location:** `/01-home-network-analysis/`
 
 ---
 
-### **Caso 2: Análisis CDN Cloudflare (14-09-2026)**
+### Case 2: Cloudflare CDN Analysis (14-09-2026)
 
-**Objetivo:** Detectar patrones de tráfico CDN y volumen de datos
+**Objective:** Detect CDN traffic patterns and data volume
 
-**Hallazgos:**
+**Findings:**
 - **IP:** 162.159.141.124 (Cloudflare Inc., AS13335)
-- **Tráfico:** 60.62% del ancho de banda (1,704 paquetes)
-- **Otros orígenes:** Meta (~8%), Google (~3%), Anthropic (4.59%)
-- **Clasificación:** ✅ **Legítimo** - Web browsing mediante CDN
+- **Traffic:** 60.62% bandwidth (1,704 packets)
+- **Other sources:** Meta (~8%), Google (~3%), Anthropic (4.59%)
+- **Classification:** ✅ **Legitimate** - web browsing via CDN
 
-**Técnicas de Análisis:**
-- Estadísticas de paquetes por IP
-- Identificación de protocolos
-- ASN lookup y geolocalización
-- Timeline de eventos de red
+**Analysis Techniques:**
+- Packet statistics by IP
+- Protocol identification
+- ASN lookup and geolocation
+- Event timeline creation
 
-**Archivos:** `/02-cloudflare-traffic-analysis/`
+**Location:** `/02-cloudflare-traffic-analysis/`
 
 ---
 
-### **Caso 3: Automatización Wireshark → Wazuh (25-09-2026)**
+### Case 3: Wireshark-to-Wazuh Automation (25-09-2026)
 
-**Objetivo:** Crear pipeline automatizado de ingesta de tráfico de red en SIEM
+**Objective:** Build automated pipeline for network traffic ingestion into SIEM
 
-**Componentes:**
+**Status:** Capture and parsing working ✅
 
-#### **Script Python (`wireshark_to_wazuh.py`)**
+#### Python Script (`wireshark_to_wazuh.py`)
 
-Flujo: Captura (tshark) → JSON → Parsing → API Wazuh → Dashboard
+**Flow:** Capture (tshark) → JSON → Parsing → Local storage
 
+**Features:**
+- ✅ Captures 60 seconds of traffic on eth0
+- ✅ Exports to JSON format
+- ✅ Parses first 50 packets
+- ✅ Extracts: src_ip, dst_ip, protocol, dst_port, frame_length
+- ✅ Saves to `/home/kali/wireshark_logs/`
 
-**Funcionalidades:**
-- ✅ Captura 60 segundos de tráfico en eth0
-- ✅ Exporta a JSON con tshark
-- ✅ Parsea primeros 50 paquetes
-- ✅ Autentica con API REST de Wazuh (Bearer token)
-- ✅ Envía eventos a Wazuh Manager
-- ✅ Manejo de errores y logging
-
-**Ejemplo de evento generado:**
+**Example Event:**
 ```json
 {
+  "timestamp": "2026-09-30T22:55:32.123456",
   "event_type": "network_traffic",
   "src_ip": "192.168.0.20",
-  "dst_ip": "162.159.141.124",
+  "dst_ip": "172.67.157.37",
   "protocol": "HTTPS",
   "dst_port": "443",
-  "frame_length": "1507",
-  "timestamp": "2026-09-26T11:30:32.542643253Z"
+  "frame_length": "1507"
 }
 ```
 
-#### **Reglas de Detección Wazuh (`wazuh_rules.xml`)**
+#### Wazuh Detection Rules (`wazuh_rules.xml`)
 
-| Rule ID | Nombre | Nivel | Descripción |
-|---------|--------|-------|-------------|
-| 100000 | Parent Rule | 0 | Evento base de tráfico de red |
-| 100001 | Cloudflare CDN | 3 | Detecta tráfico a 162.159.141.124 |
-| 100002 | Anthropic CDN | 3 | Detecta tráfico a 160.79.104.10 |
-| 100003 | HTTPS Traffic | 2 | Detecta tráfico encriptado puerto 443 |
-| 100004 | Network Analysis | 5 | Alerta general de análisis de tráfico |
+| Rule ID | Name | Level | Description |
+|---------|------|-------|-------------|
+| 100000 | Parent Rule | 0 | Base network traffic events |
+| 100001 | Cloudflare CDN | 3 | Detects traffic to 162.159.141.124 |
+| 100002 | Anthropic CDN | 3 | Detects traffic to 160.79.104.10 |
+| 100003 | HTTPS Traffic | 2 | Detects encrypted traffic port 443 |
+| 100004 | Network Analysis | 5 | Network analysis alerts |
 
-**Archivos:** `/03-wireshark-wazuh-automation/`
+**Location:** `/03-wireshark-wazuh-automation/`
 
 ---
 
-## 🛠️ Configuración y Uso
+## 📊 Execution Results (30-09-2026)
 
-### **Requisitos**
+**Status:** Capture and parsing working ✅
+
+### Traffic Capture
+- ✅ Duration: 60 seconds on eth0
+- ✅ Packets captured: 1,291
+- ✅ Format: JSON (tshark)
+
+### Event Analysis
+- ✅ Events analyzed: 50 packets
+- ✅ Fields extracted: src_ip, dst_ip, protocol, dst_port, frame_length, timestamp
+- ✅ Correctly parsed: HTTPS (port 443), TCP, other protocols
+
+### Event Storage
+- ✅ Location: `/home/kali/wireshark_logs/wireshark_events_YYYYMMDD_HHMMSS.json`
+- ✅ Valid JSON format
+- ✅ Coming soon: Automatic Wazuh ingestion
+
+### Top 5 Events Captured
+
+1. 20.215.74.200 → 192.168.0.100:12845 (TCP)
+2. 192.168.0.100 → 20.215.74.200:443 (HTTPS) ← CDN Traffic
+3. 192.168.0.10 → 224.0.0.251 (TCP)
+4. 192.168.0.100 → 20.215.74.200:443 (HTTPS)
+5. 20.215.74.200 → 192.168.0.100:12845 (TCP)
+... and 45 more
+
+---
+
+## 🛠️ Setup and Usage
+
+### Requirements
+
 Kali Linux 2023.x+
 Python 3.10+
 Wireshark/tshark
-Wazuh Manager 4.14.6+ (OVA en VirtualBox)
+Wazuh Manager 4.14.6+ (OVA on VirtualBox)
+Wazuh Agent
 curl, git, nano
 
-### **Instalación**
 
-1. **Clonar el repositorio:**
+### Installation
+
+1. **Clone repository:**
 ```bash
 git clone https://github.com/Alvarezlh/Network-Analysis-Lab.git
 cd Network-Analysis-Lab/03-wireshark-wazuh-automation
 ```
 
-2. **Instalar dependencias Python:**
+2. **Install Python dependencies:**
 ```bash
 pip install requests python-dotenv
 ```
 
-3. **Configurar variables de entorno:**
+3. **Configure environment variables:**
 ```bash
 cp config/config.env.example config/config.env
 nano config/config.env
@@ -186,134 +217,119 @@ LOG_DIR=/home/kali/wireshark_logs
 RETENTION_DAYS=7
 
 
-4. **Cargar reglas en Wazuh:**
+4. **Load Wazuh rules:**
    - Dashboard → Management → Rules → Custom rules
-   - Crear: `0100-wireshark_network_analysis.xml`
-   - Copiar contenido de `config/wazuh_rules.xml`
-   - Save y reiniciar: `sudo systemctl restart wazuh-manager`
+   - Create: `0100-wireshark_network_analysis.xml`
+   - Copy content from `config/wazuh_rules.xml`
+   - Save and restart: `sudo systemctl restart wazuh-manager`
 
-### **Ejecución**
+### Execution
 
 ```bash
 cd scripts/
-python3 wireshark_to_wazuh.py
+sudo python3 wireshark_to_wazuh.py
 ```
 
-**Output esperado:**
+**Expected output:**
+
 ==================================================
 🚀 Wireshark to Wazuh Automation
-📡 Capturando 60s...
-✅ Captura guardada (8248 paquetes)
-📊 Analizando...
-✅ 50 paquetes analizados
-🔐 Autenticando en Wazuh...
-✅ Autenticado
-📤 Enviando 50 eventos...
-✅ Enviado
-🧹 Limpiando...
-✅ Limpieza completa
 
-✅ Proceso completado
+📡 Capturing 60s...
+✅ Capture saved (XXXX packets)
+📊 Analyzing...
+✅ 50 packets analyzed
+💾 Saving events...
+✅ Saved to: /home/kali/wireshark_logs/wireshark_events_*.json
+
+📋 Event Summary:
+
+20.215.74.200 → 192.168.0.100:12845 (TCP)
+192.168.0.100 → 20.215.74.200:443 (HTTPS)
+...
+==================================================
+✅ Process completed
 
 
-### **Verificación en Dashboard**
+### Verification in Dashboard
 
-1. Acceder: `https://192.168.0.20`
-2. **Security Events** → Filtrar por `rule.id: 100001-100004`
-3. Revisar eventos capturados y análisis
+1. Access: `https://192.168.0.20`
+2. **Security Events** → Filter `rule.id: 100001-100004`
+3. Review captured events and analysis
 
 ---
 
-## 🐛 Problemas Conocidos
+## 🐛 Known Issues
 
-### **Problema 1: DHCP y cambio de IPs**
+### Issue 1: DHCP and changing IPs
 
-Síntoma: Las IPs de Kali y Wazuh cambian cada sesión
-Solución: Ejecutar 'ip addr' antes de iniciar
-Actualizar WAZUH_API_URL en config.env si cambió
-
-
-### **Problema 2: IPv6 en lugar de IPv4**
-
-Síntoma: Wazuh recibe dirección MAC/IPv6 en lugar de 192.168.x.x
-Solución: Deshabilitar IPv6 en VirtualBox:
-En VM Wazuh → sudo nano /etc/netplan/00-installer-config.yaml
-Agregar: dhcp6: false
-Luego: sudo netplan apply
+Symptom: Kali and Wazuh IPs change each session
+Solution: Run 'ip addr' before starting
+Update WAZUH_API_URL in config.env if changed
 
 
-### **Problema 3: Wazuh Dashboard no carga**
+### Issue 2: IPv6 instead of IPv4
 
-Síntoma: Pantalla en blanco después de iniciar
-Solución: Esperar 10-15 minutos (OpenSearch es lento)
+Symptom: Wazuh receives IPv6/MAC instead of 192.168.x.x
+Solution: Disable IPv6 in /etc/netplan/00-installer-config.yaml (dhcp6: false)
+Then: sudo netplan apply
+
+
+### Issue 3: Wazuh Dashboard won't load
+
+Symptom: Blank page after boot
+Solution: Wait 10-15 min (OpenSearch is slow)
 sudo systemctl restart elasticsearch wazuh-manager wazuh-dashboard
-Limpiar caché del navegador (Ctrl + Shift + Delete)
+Clear browser cache (Ctrl + Shift + Delete)
 
 
-### **Problema 4: API Wazuh rechaza eventos**
+### Issue 4: tshark permission timeout
 
-Síntoma: Status 401 o 403 en respuesta de API
-Solución: Verificar credenciales en config.env
-Reiniciar wazuh-manager: sudo systemctl restart wazuh-manager
-Comprobar que JSON tiene estructura correcta
-
-
----
-
-## 📊 Arquitectura SIEM
-
-Kali Linux (192.168.0.15) Wazuh Manager (192.168.0.20)
-┌─────────────────────┐ ┌──────────────────────┐
-│ tshark (captura) │ │ Wazuh Manager │
-│ Python (parseo) │────────→│ Elasticsearch │
-│ API REST (envío) │ │ Wazuh Dashboard │
-└─────────────────────┘ └──────────────────────┘
-↓ ↓
-wireshark_logs/ Security Events
-(JSON temporales) (Visualización)
+Symptom: "tshark timed out after 70 seconds"
+Solution: Run with sudo: sudo python3 wireshark_to_wazuh.py
 
 
 ---
 
-## 🔐 Seguridad y Privacidad
+## 🔐 Security and Privacy
 
-**Datos redactados antes de publicar:**
-- SSID de red: `Home-Network` (no específico)
-- IPs privadas: `192.168.0.x` (formato genérico)
-- Nombres de host: No publicados
+**Redacted before publishing:**
+- SSID: `Home-Network` (not specific)
+- Private IPs: `192.168.0.x` (generic format)
+- Hostnames: Not published
 
-**Datos seguros de publicar:**
-- IPs públicas: Cloudflare, Anthropic (ya públicas en WHOIS)
-- Reglas de Wazuh: Métodos de detección
-- Reportes de análisis: Metodología
+**Safe to publish:**
+- Public IPs: Cloudflare, Anthropic (already public in WHOIS)
+- Wazuh rules: Detection methods
+- Analysis reports: Methodology
 
 ---
 
-## 📈 Skills Demostrados
+## 📈 Demonstrated Skills
 
 ✅ **Network Security**
-- Captura y análisis de tráfico
-- Identificación de endpoints y patrones
-- OSINT e investigación de IPs
+- Traffic capture and analysis
+- Endpoint and pattern identification
+- OSINT and IP investigation
 
 ✅ **SIEM & Log Management**
-- Ingesta de eventos en Wazuh
-- Escritura de reglas de detección custom
-- Análisis de Security Events
+- Event ingestion into Wazuh
+- Custom detection rule writing
+- Security event analysis
 
 ✅ **Automation & Scripting**
-- Python con requests y subprocess
-- Integración API REST
-- Gestión de archivos y logging
+- Python with requests and subprocess
+- REST API integration
+- File and logging management
 
 ✅ **Blue Team / SOC Analyst**
-- Redacción de reportes de incidente
-- Clasificación de alertas (True/False Positive)
-- Remediación de falsos positivos
+- Incident report writing
+- Alert classification (True/False Positive)
+- False positive remediation
 
 ---
 
-## 📚 Referencias
+## 📚 References
 
 - [Wazuh Official Documentation](https://documentation.wazuh.com/)
 - [Wireshark User Guide](https://www.wireshark.org/docs/)
@@ -322,84 +338,31 @@ wireshark_logs/ Security Events
 
 ---
 
-## 📝 Próximos Pasos
+## 📝 Next Steps
 
-- [ ] Crear dashboard visual en Wazuh con gráficos de tráfico
-- [ ] Implementar cron job para automatización horaria
-- [ ] Agregar detección de anomalías (machine learning)
-- [ ] Integración con Slack para alertas en tiempo real
-- [ ] Documentar casos adicionales de análisis
+- [ ] Complete Wazuh Agent ingestion integration
+- [ ] Create visual dashboard in Wazuh
+- [ ] Automate with cron job (hourly execution)
+- [ ] Add machine learning anomaly detection
+- [ ] Slack integration for real-time alerts
 
 ---
 
-## 👤 Autor
+## 👤 Author
 
 **Luis Enrique Alvarez Hernandez**
 - Portfolio: SOC Analyst | Blue Team
 - LinkedIn: [linkedin.com/in/luis-enrique-alvarez/](https://linkedin.com/in/luis-enrique-alvarez/)
-- Ubicación: Barcelona, España
+- Location: Barcelona, Spain
 
 ---
 
----
+## 📄 License
 
-## 📊 Resultados del Caso 3: Wireshark-to-Wazuh Automation
+This project is open source for educational and portfolio purposes.
 
-**Estado:** Captura y parseo funcionando ✅
+Last updated: 01-10-2026
+Status: v1.0 - Capture and Analysis
+Next: Wazuh Agent Integration
 
-### Ejecución Exitosa (30-09-2026)
 
-**Captura de tráfico:**
-- ✅ Duración: 60 segundos en eth0
-- ✅ Paquetes capturados: 3,896
-- ✅ Formato: JSON (tshark)
-
-**Análisis de eventos:**
-- ✅ Eventos analizados: 50 primeros paquetes
-- ✅ Campos extraídos: src_ip, dst_ip, protocol, dst_port, frame_length, timestamp
-- ✅ Parseado correctamente: HTTPS (puerto 443), TCP, otros protocolos
-
-**Guardado de eventos:**
-- ✅ Ubicación: `/home/kali/wireshark_logs/wireshark_events_YYYYMMDD_HHMMSS.json`
-- ✅ Formato JSON válido
-- ✅ Pronto: Ingesta automática en Wazuh SIEM
-
-### Ejemplo de Evento Capturado
-
-```json
-{
-  "timestamp": "2026-09-30T22:55:32.123456",
-  "event_type": "network_traffic",
-  "src_ip": "192.168.0.20",
-  "dst_ip": "172.67.157.37",
-  "protocol": "HTTPS",
-  "dst_port": "443",
-  "frame_length": "1507"
-}
-```
-
-### Tráfico Analizado (Top 5)
-
-1. 172.67.157.37 → 192.168.0.20:40890 (TCP)
-2. 192.168.0.20 → 172.67.157.37:443 (HTTPS)
-3. N/A → N/A (TCP) - Paquete incompleto
-4. 172.67.157.37 → 192.168.0.20:40890 (TCP)
-5. 192.168.0.20 → 172.67.157.37:443 (HTTPS)
-... y 45 más
-
-### Próximos Pasos
-
-- [ ] Implementar ingesta automática en Wazuh SIEM
-- [ ] Mapeo de eventos JSON con reglas de detección (100001-100004)
-- [ ] Crear dashboard visual en Wazuh
-- [ ] Automatizar con cron job (ejecución horaria)
-- [ ] Integración con Slack para alertas en tiempo real
-
----
-
-## 📄 Licencia
-
-Este proyecto es de código abierto para propósitos educativos y de portfolio.
-
-Última actualización: 30-09-2026
-Estado: En desarrollo (v1.0)
