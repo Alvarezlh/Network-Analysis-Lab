@@ -1,156 +1,111 @@
 #!/usr/bin/env python3
-"""
-Wireshark to Wazuh Automation Script
-Captura tráfico, exporta a JSON y envía a Wazuh
+"""Wireshark to Wazuh automation.
+
+Captures traffic with tshark, extracts simple events and appends them, one JSON
+object per line, to a log file monitored by the Wazuh Agent.
 """
 
-import subprocess
 import json
 import os
-import time
-import requests
+import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
+
 from dotenv import load_dotenv
 
-# Load configuration from .env file
-load_dotenv('/home/kali/Network-Analysis-Lab/03-wireshark-wazuh-automation/config/config.env')
+# Load configuration (config.env lives in ../config relative to this script)
+load_dotenv(Path(__file__).resolve().parent.parent / 'config' / 'config.env')
 
-# Configuration from environment variables
-WAZUH_API = os.getenv('WAZUH_API_URL', 'https://192.168.0.20:55000')
-WAZUH_USER = os.getenv('WAZUH_USER', 'wazuh')
-WAZUH_PASS = os.getenv('WAZUH_PASS', 'wazuh')
-AGENT_ID = "000"
-CAPTURE_DURATION = int(os.getenv('CAPTURE_DURATION', 60))
-CAPTURE_FILE = "/tmp/network_capture.pcap"
-JSON_FILE = "/tmp/network_capture.json"
 LOG_DIR = os.getenv('LOG_DIR', '/home/kali/wireshark_logs')
+CAPTURE_DURATION = os.getenv('CAPTURE_DURATION', '60')
+CAPTURE_INTERFACE = os.getenv('CAPTURE_INTERFACE', 'eth0')
 
-Path(LOG_DIR).mkdir(exist_ok=True)
+print("=" * 50)
+print("🚀 Wireshark to Wazuh Automation")
+print("=" * 50)
 
-def get_wazuh_token():
-    """Obtener token Wazuh"""
-    try:
-        response = requests.post(
-            f"{WAZUH_API}/security/user/authenticate",
-            auth=(WAZUH_USER, WAZUH_PASS),
-            verify=False
-        )
-        return response.json()['data']['token']
-    except Exception as e:
-        print(f"❌ Error autenticando: {e}")
-        return None
+# Create the log directory if it does not exist
+os.makedirs(LOG_DIR, exist_ok=True)
 
-def capture_traffic(duration, output_file):
-    """Capturar con tshark"""
-    print(f"📡 Capturando {duration}s...")
-    try:
-        cmd = ["tshark", "-i", "eth0", "-a", f"duration:{duration}", "-w", output_file]
-        subprocess.run(cmd, check=True)
-        print(f"✅ Captura guardada")
-        return True
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
+# STEP 1: Capture traffic
+print(f"📡 Capturing {CAPTURE_DURATION}s on {CAPTURE_INTERFACE}...")
+try:
+    result = subprocess.run(
+        ['tshark', '-i', CAPTURE_INTERFACE, '-a', f'duration:{CAPTURE_DURATION}', '-T', 'json'],
+        capture_output=True,
+        text=True,
+        timeout=int(CAPTURE_DURATION) + 10
+    )
 
-def export_to_json(pcap_file, json_file):
-    """Exportar a JSON"""
-    print(f"🔄 Exportando JSON...")
-    try:
-        cmd = ["tshark", "-r", pcap_file, "-T", "json"]
-        with open(json_file, 'w') as f:
-            subprocess.run(cmd, stdout=f, check=True)
-        print(f"✅ JSON exportado")
-        return True
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
+    if result.returncode != 0:
+        print(f"❌ Capture error: {result.stderr}")
+        sys.exit(1)
 
-def parse_json_packets(json_file):
-    """Parsear JSON"""
-    print(f"📊 Analizando...")
-    try:
-        with open(json_file, 'r') as f:
-            data = json.load(f)
-        
-        events = []
-        for packet in data[:50]:
-            try:
-                source = packet['_source']['layers'].get('ip', {}).get('ip.src', 'N/A')
-                dest = packet['_source']['layers'].get('ip', {}).get('ip.dst', 'N/A')
-                protocol = packet['_source']['layers'].get('highest_layer', 'N/A')
-                
-                event = {
-                    "timestamp": datetime.now().isoformat(),
-                    "source_ip": source,
-                    "dest_ip": dest,
-                    "protocol": protocol,
-                    "event_type": "network_traffic"
-                }
-                events.append(event)
-            except:
-                continue
-        
-        print(f"✅ {len(events)} paquetes analizados")
-        return events
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return []
+    packet_count = result.stdout.count('"frame"')
+    print(f"✅ Capture finished ({packet_count} packets)")
+except Exception as e:
+    print(f"❌ Capture error: {e}")
+    sys.exit(1)
 
-def send_to_wazuh(events, token):
-    """Enviar a Wazuh"""
-    if not token:
-        print("❌ Sin token")
-        return False
-    
-    print(f"📤 Enviando {len(events)} eventos...")
-    try:
-        headers = {"Authorization": f"Bearer {token}"}
+# STEP 2: Parse the capture and build events
+print("📊 Analyzing packets...")
+try:
+    packets = json.loads(result.stdout)
+    events = []
+
+    for packet in packets[:50]:  # first 50 packets
+        try:
+            layers = packet.get('_source', {}).get('layers', {})
+            ip_layer = layers.get('ip', {})
+            tcp_layer = layers.get('tcp', {})
+            frame_layer = layers.get('frame', {})
+
+            src_ip = ip_layer.get('ip.src', 'N/A')
+            dst_ip = ip_layer.get('ip.dst', 'N/A')
+            dst_port = tcp_layer.get('tcp.dstport', '')
+            protocol = 'HTTPS' if dst_port == '443' else 'TCP'
+
+            event = {
+                'timestamp': datetime.now().isoformat(),
+                'event_type': 'network_traffic',
+                'src_ip': src_ip,
+                'dst_ip': dst_ip,
+                'protocol': protocol,
+                'dst_port': dst_port,
+                'frame_length': frame_layer.get('frame.len', '0')
+            }
+            events.append(event)
+        except Exception:
+            continue
+
+    print(f"✅ {len(events)} packets analyzed")
+except Exception as e:
+    print(f"❌ Parsing error: {e}")
+    sys.exit(1)
+
+# STEP 3: Append events to the monitored log file (one JSON object per line)
+print("💾 Saving events...")
+try:
+    output_file = f"{LOG_DIR}/wireshark_events.json"
+
+    with open(output_file, 'a') as f:
         for event in events:
-            requests.post(f"{WAZUH_API}/events", json=event, headers=headers, verify=False)
-        print(f"✅ Enviado")
-        return True
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        return False
+            f.write(json.dumps(event) + "\n")
 
-def cleanup():
-    """Limpiar temporales"""
-    print("🧹 Limpiando...")
-    try:
-        if os.path.exists(CAPTURE_FILE):
-            os.remove(CAPTURE_FILE)
-        if os.path.exists(JSON_FILE):
-            os.remove(JSON_FILE)
-        print("✅ Limpieza completa")
-    except Exception as e:
-        print(f"⚠️  Error: {e}")
+    print(f"✅ Saved to: {output_file}")
+except Exception as e:
+    print(f"❌ Saving error: {e}")
+    sys.exit(1)
 
-def main():
-    """Flujo principal"""
-    print("=" * 50)
-    print("🚀 Wireshark to Wazuh Automation")
-    print("=" * 50)
-    
-    if not capture_traffic(CAPTURE_DURATION, CAPTURE_FILE):
-        return
-    
-    if not export_to_json(CAPTURE_FILE, JSON_FILE):
-        return
-    
-    events = parse_json_packets(JSON_FILE)
-    if not events:
-        print("⚠️  No hay eventos")
-        cleanup()
-        return
-    
-    token = get_wazuh_token()
-    send_to_wazuh(events, token)
-    cleanup()
-    
-    print("=" * 50)
-    print("✅ Proceso completado")
-    print("=" * 50)
+# STEP 4: Show a short summary
+print("\n📋 Event summary:")
+for i, event in enumerate(events[:5], 1):
+    print(f"  {i}. {event['src_ip']} → {event['dst_ip']}:{event['dst_port']} ({event['protocol']})")
 
-if __name__ == "__main__":
-    main()
+if len(events) > 5:
+    print(f"  ... and {len(events) - 5} more")
+
+print("=" * 50)
+print("✅ Process completed")
+print("=" * 50)
