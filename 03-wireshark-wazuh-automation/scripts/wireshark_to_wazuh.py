@@ -51,6 +51,23 @@ def get_protocol(frame_protocols):
     return names[-1].upper() if names else 'OTHER'
 
 
+def parse_frame_time(value):
+    """Parse the packet time, which tshark may emit as an ISO string ('...Z')
+    or, on other versions, as a Unix epoch float. Falls back to now() on any
+    unexpected format so a single bad packet never breaks the whole capture.
+    """
+    if not value:
+        return datetime.now(timezone.utc)
+    try:
+        return datetime.fromisoformat(str(value).replace('Z', '+00:00'))
+    except ValueError:
+        pass
+    try:
+        return datetime.fromtimestamp(float(value), tz=timezone.utc)
+    except ValueError:
+        return datetime.now(timezone.utc)
+
+
 def build_event(packet):
     """Build an event from a packet, or return None if it has no IP layer."""
     layers = packet.get('_source', {}).get('layers', {})
@@ -71,8 +88,7 @@ def build_event(packet):
     dst_port = transport.get('tcp.dstport') or transport.get('udp.dstport') or ''
 
     frame = layers.get('frame', {})
-    epoch = float(frame.get('frame.time_epoch', 0) or 0)
-    when = datetime.fromtimestamp(epoch, tz=timezone.utc) if epoch else datetime.now(timezone.utc)
+    when = parse_frame_time(frame.get('frame.time_utc') or frame.get('frame.time_epoch'))
 
     return {
         'timestamp': when.isoformat(),
