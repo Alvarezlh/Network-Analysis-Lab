@@ -29,10 +29,11 @@
     <group>network_traffic,cdn_detection,</group>
   </rule>
 
-  <!-- Encrypted traffic: the protocol label comes from the highest layer dissected by tshark -->
+  <!-- Encrypted traffic: matches the decoded "protocol" field directly, not raw text,
+       to avoid depending on exact JSON formatting (spacing) in full_log -->
   <rule id="100003" level="3">
     <if_sid>100004</if_sid>
-    <match>"protocol": "TLS"|"protocol": "QUIC"</match>
+    <field name="protocol" type="pcre2">^(TLS|QUIC)$</field>
     <description>Encrypted Traffic (TLS/QUIC)</description>
     <group>network_traffic,encrypted_traffic,</group>
   </rule>
