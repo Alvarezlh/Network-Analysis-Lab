@@ -1,20 +1,17 @@
 <group name="wireshark_network,">
 
-  <!-- Parent rule: decodes JSON events emitted by wireshark_to_wazuh.py (level 0, never alerts) -->
   <rule id="100000" level="0">
     <decoded_as>json</decoded_as>
     <field name="event_type">network_traffic</field>
     <description>Wireshark network traffic events</description>
   </rule>
 
-  <!-- Generic rule: any network_traffic event not matched by a more specific rule below -->
   <rule id="100004" level="5">
     <if_sid>100000</if_sid>
     <description>Network Traffic Analysis Alert</description>
     <group>network_traffic,analysis,</group>
   </rule>
 
-  <!-- Specific rules: children of the generic rule -->
   <rule id="100001" level="3">
     <if_sid>100004</if_sid>
     <field name="dst_ip">162.159.141.124</field>
@@ -29,11 +26,9 @@
     <group>network_traffic,cdn_detection,</group>
   </rule>
 
-  <!-- Encrypted traffic: matches the decoded "protocol" field directly, not raw text,
-       to avoid depending on exact JSON formatting (spacing) in full_log -->
   <rule id="100003" level="3">
     <if_sid>100004</if_sid>
-    <field name="protocol" type="pcre2">^(TLS|QUIC)$</field>
+    <match type="pcre2">"protocol":\s*"(TLS|QUIC)"</match>
     <description>Encrypted Traffic (TLS/QUIC)</description>
     <group>network_traffic,encrypted_traffic,</group>
   </rule>
