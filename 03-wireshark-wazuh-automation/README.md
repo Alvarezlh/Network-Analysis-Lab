@@ -8,12 +8,14 @@ Capture network traffic automatically with tshark and bring it into the Wazuh SI
 
 ## Architecture
 
+```
 tshark (60 s capture)
 -> Python parser (random sample, up to 50 IP packets)
 -> wireshark_events.json (one JSON object per line, append mode)
 -> Wazuh Agent (localfile, json)
 -> Wazuh Manager (custom rules 100000-100004)
 -> Wazuh Dashboard
+```
 
 
 ## Components
@@ -29,7 +31,7 @@ tshark (60 s capture)
 Each line of the log file is a complete JSON object:
 
 ```json
-{"timestamp": "2026-10-06T21:33:58.986104+00:00", "event_type": "network_traffic", "src_ip": "54.187.119.242", "dst_ip": "192.168.0.15", "protocol": "TLS", "dst_port": "4918", "frame_length": "85"}
+{"timestamp": "2026-10-06T21:33:58.986104+00:00", "event_type": "network_traffic", "src_ip": "54.187.119.242", "dst_ip": "192.168.0.10", "protocol": "TLS", "dst_port": "4918", "frame_length": "85"}
 ```
 
 `protocol` is the highest-level protocol dissected by tshark (TLS, QUIC, DNS, MDNS, ICMP, UDP, TCP, ...), not a guess based on the destination port.
@@ -50,25 +52,27 @@ Each line of the log file is a complete JSON object:
 
 1. Create `config/config.env` (not committed):
 
+```
 CAPTURE_DURATION=60
 CAPTURE_INTERFACE=eth0
 LOG_DIR=/home/kali/wireshark_logs
+```
 
 2. Create the log file once and add the `<localfile>` block to the agent's `ossec.conf`:
-```bash
+   ```bash
    sudo touch /home/kali/wireshark_logs/wireshark_events.json
    sudo systemctl restart wazuh-agent
-```
+   ```
 3. On the Manager, write `/var/ossec/etc/rules/0100-wireshark_network_analysis.xml` with the content of `config/wazuh_rules.xml`, validate it, then restart:
-```bash
+   ```bash
    sudo /var/ossec/bin/wazuh-analysisd -t
    sudo systemctl restart wazuh-manager
-```
+   ```
 4. Run the capture (tshark needs root):
-```bash
+   ```bash
    cd scripts/
    sudo python3 wireshark_to_wazuh.py
-```
+   ```
 
 ## Rules
 

@@ -15,6 +15,7 @@ Real-world network analysis and incident investigation using Wireshark, Wazuh an
 
 ## Project structure
 
+```
 Network-Analysis-Lab/
 ├── 01-home-network-analysis/ Case 1: Anthropic CDN
 │ ├── README.md
@@ -33,6 +34,7 @@ Network-Analysis-Lab/
 │ ├── docs/ (fixed-ip-setup.md)
 │ └── images/
 └── README.md
+```
 
 
 ## Completed cases
@@ -61,17 +63,20 @@ Details: [`01-home-network-analysis/`](01-home-network-analysis/)
 
 Details: [`02-cloudflare-traffic-analysis/`](02-cloudflare-traffic-analysis/)
 
-### Case 3: Wireshark-to-Wazuh automation (03-10-2026)
+### Case 3: Wireshark-to-Wazuh automation (03-10-2026 to 07-10-2026)
 
 **Objective:** build an automated pipeline that brings network traffic into the Wazuh SIEM as alerts.
 
+```
 tshark capture -> Python parser -> JSON lines file -> Wazuh Agent -> Wazuh Manager (custom rules) -> Dashboard
+```
 
 
 - 50 events per capture ingested and decoded in the Dashboard
 - Five custom rules (100000-100004) in a parent and child structure
-- Rules validated with controlled test events
-- Main lessons: one JSON object per line, append mode for the monitored file, and parent and child rules instead of a catch-all sibling
+- Rules validated with controlled test events and against live traffic (a 50-event capture: 17 encrypted, 32 generic, 1 Anthropic CDN)
+- Main lessons: one JSON object per line, append mode for the monitored file, parent and child rules instead of a catch-all sibling, never assuming a tool's exact output format, and writing raw-text rules that tolerate whitespace differences
+- Status: ingestion and detection rules validated; custom dashboard pending
 
 Details: [`03-wireshark-wazuh-automation/`](03-wireshark-wazuh-automation/)
 
