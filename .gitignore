@@ -2,3 +2,8 @@
 03-wireshark-wazuh-automation/config/config.env
 *.env
 *.conf.local
+
+# Packet captures contain real traffic (IPs, MACs, server names): never commit
+*.pcap
+*.pcapng
+*.cap
