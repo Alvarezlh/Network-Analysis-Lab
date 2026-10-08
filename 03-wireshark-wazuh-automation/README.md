@@ -31,7 +31,7 @@ tshark (60 s capture)
 Each line of the log file is a complete JSON object:
 
 ```json
-{"timestamp": "2026-10-06T21:33:58.986104+00:00", "event_type": "network_traffic", "src_ip": "54.187.119.242", "dst_ip": "192.168.0.10", "protocol": "TLS", "dst_port": "4918", "frame_length": "85"}
+{"timestamp": "2026-10-06T21:33:58.986104+00:00", "event_type": "network_traffic", "src_ip": "54.187.119.242", "dst_ip": "192.168.0.x", "protocol": "TLS", "dst_port": "4918", "frame_length": "85"}
 ```
 
 `protocol` is the highest-level protocol dissected by tshark (TLS, QUIC, DNS, MDNS, ICMP, UDP, TCP, ...), not a guess based on the destination port.

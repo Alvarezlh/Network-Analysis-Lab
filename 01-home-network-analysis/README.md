@@ -6,7 +6,7 @@
 
 ## 🔍 Executive Summary
 
-Detected unusual network traffic from local IP 192.168.0.13 consuming 39.32% 
+Detected unusual network traffic from local IP 192.168.0.x consuming 39.32% 
 of total bandwidth. Investigation revealed legitimate Anthropic CDN traffic.
 
 **Status:** ✅ **CLOSED - False Positive**
@@ -27,8 +27,8 @@ of total bandwidth. Investigation revealed legitimate Anthropic CDN traffic.
 ### IP Breakdown
 - **192.168.0.x** → 4,776 pkts (39.32%) - Local PC (WiFi)
 - **160.79.104.10** → 4,398 pkts (36.21%) - Anthropic CDN
-- **192.168.0.12** → 832 pkts (6.85%)
-- **192.168.0.1** → 509 pkts (4.19%) - Router
+- **192.168.0.x** → 832 pkts (6.85%)
+- **192.168.0.x** → 509 pkts (4.19%) - Router
 - Others → ~632 pkts (13.63%)
 
 ---

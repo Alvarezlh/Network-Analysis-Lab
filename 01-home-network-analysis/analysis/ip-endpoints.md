@@ -10,10 +10,10 @@ Detailed breakdown of all IP addresses detected in the network capture.
 |------------|---------------|---------|-------|---------|--------|
 | 192.168.0.x | Local PC (WiFi) | 4,776 | 2.1 MB | 39.32% | ✅ Local |
 | 160.79.104.10 | Anthropic CDN | 4,398 | 1.8 MB | 36.21% | ✅ Legitimate |
-| 192.168.0.12 | Unknown Device | 832 | 0.4 MB | 6.85% | ⚠️ Monitor |
-| 192.168.0.1 | Router/Gateway | 509 | 0.2 MB | 4.19% | ✅ Local |
-| 192.168.0.18 | Unknown Device | 270 | 0.1 MB | 2.22% | ⚠️ Monitor |
-| 192.168.0.10 | Unknown Device | 254 | 0.1 MB | 2.09% | ⚠️ Monitor |
+| 192.168.0.x | Unknown Device | 832 | 0.4 MB | 6.85% | ⚠️ Monitor |
+| 192.168.0.x | Router/Gateway | 509 | 0.2 MB | 4.19% | ✅ Local |
+| 192.168.0.x | Unknown Device | 270 | 0.1 MB | 2.22% | ⚠️ Monitor |
+| 192.168.0.x | Unknown Device | 254 | 0.1 MB | 2.09% | ⚠️ Monitor |
 | 100.61.38.38 | Unknown | 161 | 0.1 MB | 1.33% | ❓ Research |
 | 35.186.224.33 | Google | 48 | 0.03 MB | 0.40% | ✅ Legitimate |
 | 35.186.224.26 | Google | 41 | 0.02 MB | 0.34% | ✅ Legitimate |
@@ -50,7 +50,7 @@ Detailed breakdown of all IP addresses detected in the network capture.
 
 ---
 
-### 3. 192.168.0.12 (6.85%)
+### 3. 192.168.0.x (6.85%)
 - **Type:** Unknown Local Device
 - **Packets:** 832
 - **Assessment:** ⚠️ **MONITOR** - Identify device type
@@ -58,15 +58,15 @@ Detailed breakdown of all IP addresses detected in the network capture.
 
 ---
 
-### 4. 192.168.0.1 (4.19%)
+### 4. 192.168.0.x (4.19%)
 - **Type:** Network Gateway/Router
-- **Device:** Likely Vodafone router
+- **Device:** Likely ISP-provided router
 - **Packets:** 509
 - **Assessment:** ✅ **NORMAL** - Gateway traffic
 
 ---
 
-### 5. 192.168.0.18 (2.22%)
+### 5. 192.168.0.x (2.22%)
 - **Type:** Unknown Local Device
 - **Packets:** 270
 - **Assessment:** ⚠️ **MONITOR** - Identify device
@@ -74,7 +74,7 @@ Detailed breakdown of all IP addresses detected in the network capture.
 
 ---
 
-### 6. 192.168.0.10 (2.09%)
+### 6. 192.168.0.x (2.09%)
 - **Type:** Unknown Local Device
 - **Packets:** 254
 - **Assessment:** ⚠️ **MONITOR** - Identify device
@@ -100,7 +100,7 @@ Detailed breakdown of all IP addresses detected in the network capture.
 
 ## 📋 Recommendations
 
-- [ ] Identify what devices are 192.168.0.12, .18, .10
+- [ ] Identify what the unknown devices on 192.168.0.x are
 - [ ] Monitor these devices for unusual traffic patterns
 - [ ] Create whitelist for 160.79.104.10 (Anthropic CDN)
 - [ ] Establish baseline for each device
